@@ -423,27 +423,8 @@ def jaxtyped(fn=_sentinel, *, typechecker=_sentinel):
                             typechecker,
                         )
                     except TypeCheckError as e:
-                        argmsg = str(e)
-                        try:
-                            module_name = fn.__module__
-                            qualname = fn.__qualname__
-                        except AttributeError:
-                            module_name = fn.__class__.__module__
-                            qualname = fn.__class__.__qualname__
-                        param_values = _pformat(bound.arguments, short_self=True)
-                        param_hints = _remove_typing(param_signature)
-                        msg = (
-                            "Type-check error whilst checking the parameters of "
-                            f"{module_name}.{qualname}.{argmsg}\n"
-                            "----------------------\n"
-                            f"Called with parameters: {param_values}\n"
-                            f"Parameter annotations: {param_hints}.\n"
-                            + shape_str(memos)
-                        )
-                        if config.jaxtyping_remove_typechecker_stack:
-                            raise TypeCheckError(msg) from None
-                        else:
-                            raise TypeCheckError(msg) from e
+                        raise
+                   
 
                 # Actually call the function.
                 out = fn(*args, **kwargs)
@@ -469,35 +450,7 @@ def jaxtyped(fn=_sentinel, *, typechecker=_sentinel):
                     except AnnotationError:
                         raise
                     except Exception as e:
-                        try:
-                            module_name = fn.__module__
-                            qualname = fn.__qualname__
-                        except AttributeError:
-                            module_name = fn.__class__.__module__
-                            qualname = fn.__class__.__qualname__
-                        param_values = _pformat(bound.arguments, short_self=True)
-                        return_value = _pformat(out, short_self=False)
-                        param_hints = _remove_typing(param_signature)
-                        return_hint = _remove_typing(full_signature.return_annotation)
-                        if return_hint.startswith("<class '") and return_hint.endswith(
-                            "'>"
-                        ):
-                            return_hint = return_hint[8:-2]
-                        msg = (
-                            "Type-check error whilst checking the return value "
-                            f"of {module_name}.{qualname}.\n"
-                            f"Actual value: {return_value}\n"
-                            f"Expected type: {return_hint}.\n"
-                            "----------------------\n"
-                            f"Called with parameters: {param_values}\n"
-                            f"Parameter annotations: {param_hints}.\n"
-                            + shape_str(memos)
-                        )
-                        if config.jaxtyping_remove_typechecker_stack:
-                            raise TypeCheckError(msg) from None
-                        else:
-                            raise TypeCheckError(msg) from e
-
+                        raise
                 return out
 
             @ft.wraps(fn)
