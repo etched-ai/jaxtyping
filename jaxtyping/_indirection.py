@@ -27,6 +27,7 @@ from typing import (
     Annotated as Complex64,  # noqa: F401
     Annotated as Complex128,  # noqa: F401
     Annotated as Float,  # noqa: F401
+    Annotated as Float4e2m1fn,  # noqa: F401
     Annotated as Float8e4m3b11fnuz,  # noqa: F401
     Annotated as Float8e4m3fn,  # noqa: F401
     Annotated as Float8e4m3fnuz,  # noqa: F401
